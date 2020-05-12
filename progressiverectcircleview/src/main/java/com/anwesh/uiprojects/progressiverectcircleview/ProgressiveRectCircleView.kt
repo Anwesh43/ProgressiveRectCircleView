@@ -201,4 +201,27 @@ class ProgressiveRectCircleView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : ProgressiveRectCircleView) {
+
+        private val animator : Animator = Animator(view)
+        private val prc : ProgressiveRectCircle = ProgressiveRectCircle(0)
+        private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+        fun render(canvas : Canvas) {
+            canvas.drawColor(backColor)
+            prc.draw(canvas, paint)
+            animator.animate {
+                prc.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            prc.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
