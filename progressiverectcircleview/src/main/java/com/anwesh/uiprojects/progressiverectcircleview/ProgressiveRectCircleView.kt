@@ -135,4 +135,45 @@ class ProgressiveRectCircleView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    data class PRCNode(var i : Int, val state : State = State()) {
+
+        private var next : PRCNode? = null
+        private var prev : PRCNode? = null
+
+        init {
+
+        }
+
+        fun addNeighbor() {
+            if (i < nodes - 1) {
+                next = PRCNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawPRCNode(i, state.scale, paint)
+        }
+
+        fun update(cb : (Float) -> Unit) {
+            state.update(cb)
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : PRCNode {
+            var curr : PRCNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
+        }
+    }
 }
