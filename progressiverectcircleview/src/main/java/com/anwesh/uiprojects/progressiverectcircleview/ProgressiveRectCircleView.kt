@@ -16,12 +16,12 @@ import android.content.Context
 val nodes : Int = 5
 val parts : Int = 3
 val arcs : Int = 2
-val scGap : Float = 0.02f
+val scGap : Float = 0.02f / (parts + 1)
 val strokeFactor : Int = 90
 val sizeFactor : Float = 2.9f
 val foreColor : Int = Color.parseColor("#4CAF50")
 val backColor : Int = Color.parseColor("#BDBDBD")
-val delay : Long = 20
+val delay : Long = 10
 val arcSizeFactor : Float = 3.2f
 
 fun Int.inverse() : Float = 1f / this
@@ -32,20 +32,20 @@ fun Float.sinify() : Float = Math.sin(this * Math.PI).toFloat()
 fun Canvas.drawProgressiveArc(i : Int, scale : Float, size : Float, paint : Paint) {
     val r : Float = size / arcSizeFactor
     val sf : Float = scale.sinify()
-    val sf1 : Float = sf.divideScale(0, parts)
+    val sf1 : Float = sf.divideScale(0, parts + 1)
     val sfi : Float = sf1.divideScale(i, arcs)
     val sj : Float = 1f - 2 * i
     paint.style = Paint.Style.STROKE
     save()
-    translate(-(size - r) * sj, 0f)
-    drawArc(RectF(-r, -r, r, r), -90f, 180f, false, paint)
+    translate(-(size - r) * sj * (1f - sfi), 0f)
+    drawArc(RectF(-r, -r, r, r), 90f * sj, 180f, false, paint)
     restore()
 }
 
 fun Canvas.drawSweepArc(scale : Float, size : Float, paint : Paint) {
     val r : Float = size / arcSizeFactor
     val sf : Float = scale.sinify()
-    val sf2 : Float = sf.divideScale(2, parts)
+    val sf2 : Float = sf.divideScale(1, parts + 1)
     paint.style = Paint.Style.FILL
     drawArc(RectF(-r, -r, r, r), 0f, 360f * sf2, true, paint)
 }
@@ -68,7 +68,7 @@ fun Canvas.drawPRCNode(i : Int, scale : Float, paint : Paint) {
     paint.strokeCap = Paint.Cap.ROUND
     paint.strokeWidth = Math.min(w, h) / strokeFactor
     save()
-    drawRect(-size, -size, size, size, paint)
+    translate(w / 2, gap * (i + 1))
     drawProgressiveRectCircle(scale, size, paint)
     restore()
 }
