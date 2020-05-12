@@ -224,4 +224,13 @@ class ProgressiveRectCircleView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : ProgressiveRectCircleView {
+            val view : ProgressiveRectCircleView = ProgressiveRectCircleView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
